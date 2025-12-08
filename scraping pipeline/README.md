@@ -43,6 +43,8 @@ scraping pipeline/
 pip install -r requirements.txt
 ```
 
+connect IP address in MongoDB Atlas and add credentials in .env file
+
 ### 2. Configure Environment
 
 Create `.env` file with your Twitter credentials:
@@ -79,6 +81,7 @@ python run_pipeline.py
 The pipeline executes in 2 steps:
 
 ### Step 1: Hashtag Scraping
+
 1. Opens browser with undetected-chromedriver
 2. Logs in to Twitter (first time only)
 3. Scrapes top 5 US trending hashtags
@@ -86,6 +89,7 @@ The pipeline executes in 2 steps:
 5. Saves cookies for future use
 
 ### Step 2: Tweet Scraping
+
 1. Loads saved cookies (no login needed!)
 2. Reads hashtags from file
 3. For each hashtag:
@@ -97,6 +101,7 @@ The pipeline executes in 2 steps:
 ## 📊 Output Format
 
 ### Hashtags File (`data/trending_hashtags.txt`)
+
 ```
 # Trending Hashtags - 2025-10-19 23:45:12
 # Total: 5
@@ -113,21 +118,25 @@ The pipeline executes in 2 steps:
 Twibot-22 compatible format with fields:
 
 **Tweet Data:**
+
 - `tweet_id`, `timestamp`, `text`, `retweet_count`, `like_count`, `reply_count`
 - `quote_count`, `hashtags`, `mentions`, `urls`, `language`, `source_hashtag`
 
 **User Data:**
+
 - `user_id`, `username`, `display_name`, `bio`, `location`, `user_created_at`
 - `followers_count`, `following_count`, `tweet_count`, `listed_count`, `verified`
 
 ## 🔧 Individual Scrapers
 
 ### Run Hashtag Scraper Only
+
 ```bash
 python src/hashtag_scraper.py
 ```
 
 ### Run Tweet Scraper Only
+
 ```bash
 # Requires hashtags file and cookies from hashtag scraper
 python src/tweet_scraper.py
@@ -136,19 +145,25 @@ python src/tweet_scraper.py
 ## ⚙️ Configuration Options
 
 ### Headless Mode
+
 Run browser in background (no visible window):
+
 ```env
 HEADLESS_MODE=True
 ```
 
 ### Adjust Tweet Limit
+
 Change tweets per hashtag:
+
 ```env
 TWEETS_PER_HASHTAG=1000  # Default: 2000
 ```
 
 ### Change Region
+
 Update `.env` (remember to connect VPN to match):
+
 ```env
 REGION=United Kingdom  # or Canada, Australia, etc.
 ```
@@ -162,6 +177,7 @@ python scheduler.py
 ```
 
 **What it does:**
+
 - Runs the complete pipeline daily at 2:00 AM Eastern Time (default)
 - Keeps running in background
 - Logs all executions
@@ -169,18 +185,21 @@ python scheduler.py
 **Configure Schedule Time:**
 
 Edit `.env` file:
+
 ```env
 SCHEDULE_TIME=02:00                    # 2 AM (24-hour format)
 SCHEDULE_TIMEZONE=America/New_York     # Eastern Time
 ```
 
 **US Timezone Options:**
+
 - `America/New_York` - Eastern Time (EST/EDT)
 - `America/Chicago` - Central Time (CST/CDT)
 - `America/Denver` - Mountain Time (MST/MDT)
 - `America/Los_Angeles` - Pacific Time (PST/PDT)
 
 **Keep Scheduler Running:**
+
 - Leave the terminal window open
 - For production: Use Windows Service, systemd, or PM2
 
@@ -207,17 +226,21 @@ SCHEDULE_TIMEZONE=America/New_York     # Eastern Time
 ## 🐛 Troubleshooting
 
 ### "Cookie file not found"
+
 - Run `python src/hashtag_scraper.py` first to login and save cookies
 
 ### "Cookies expired or invalid"
+
 - Delete `data/twitter_cookies.pkl`
 - Run hashtag scraper again to re-login
 
 ### "Wrong region trends"
+
 - Check VPN is connected to correct region
 - Delete cookies and re-run with VPN active
 
 ### Browser detection errors
+
 - Update `undetected-chromedriver`: `pip install --upgrade undetected-chromedriver`
 
 ## 📊 Daily Usage
@@ -240,5 +263,3 @@ MIT License - Use for research and educational purposes only.
 ---
 
 **Note**: Always respect Twitter's Terms of Service and use this tool responsibly.
-
-

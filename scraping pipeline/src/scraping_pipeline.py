@@ -18,6 +18,7 @@ sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 # Import our scrapers
 from hashtag_scraper import TwitterHashtagScraper
 from tweet_scraper import SeleniumTweetScraper
+from tweet_db import TweetDB 
 
 # Load environment variables
 load_dotenv()
@@ -71,7 +72,7 @@ class ScrapingPipeline:
             scraper = TwitterHashtagScraper(headless=headless_mode)
             
             # Scrape hashtags
-            hashtags = scraper.scrape_with_retry(count=5)
+            hashtags = scraper.scrape_with_retry(count=15)
             
             if hashtags and len(hashtags) > 0:
                 # Save to file
@@ -117,6 +118,11 @@ class ScrapingPipeline:
                 logger.info("="*70)
                 logger.info(f"✓ STEP 2 COMPLETED: Tweets saved to {self.tweets_output}")
                 logger.info("="*70)
+                logger.info("STEP 3 : Saving data in Database")
+                logger.info("="*70)
+                db = TweetDB()
+                db.save_json(self.tweets_output)
+                logger.info("="*70)
                 return True
             else:
                 logger.error("✗ STEP 2 FAILED: No tweets collected")
@@ -141,7 +147,7 @@ class ScrapingPipeline:
         logger.info("╚"+"═"*68+"╝")
         logger.info("")
         logger.info(f"Start Time: {start_time.strftime('%Y-%m-%d %H:%M:%S')}")
-        logger.info(f"Target: 5 trending hashtags → 2000 tweets each = 10,000 tweets")
+        logger.info(f"Target: 15 trending hashtags → 2000 tweets each = 10,000 tweets")
         logger.info("")
         
         results = {
@@ -258,5 +264,4 @@ def main():
 
 if __name__ == "__main__":
     main()
-
 

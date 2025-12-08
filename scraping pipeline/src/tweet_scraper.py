@@ -9,6 +9,7 @@ import csv
 import time
 import random
 import logging
+import json
 from datetime import datetime, timedelta
 from pathlib import Path
 import undetected_chromedriver as uc
@@ -20,6 +21,7 @@ from selenium.common.exceptions import TimeoutException, NoSuchElementException,
 import pandas as pd
 from langdetect import detect, LangDetectException
 from dotenv import load_dotenv
+from tweet_db import TweetDB 
 
 # Load environment variables
 load_dotenv()
@@ -575,7 +577,7 @@ class SeleniumTweetScraper:
                 tweets = self.scrape_tweets_for_hashtag(hashtag, self.tweets_per_hashtag)
                 all_tweets.extend(tweets)
                 
-                logger.info(f"📊 Total tweets collected so far: {len(all_tweets)}")
+                logger.info(f"Total tweets collected so far: {len(all_tweets)}")
                 
                 # Longer delay between hashtags to avoid rate limiting
                 if idx < len(hashtags):
@@ -587,13 +589,13 @@ class SeleniumTweetScraper:
             
             # Generate output filename with timestamp
             timestamp = datetime.now().strftime('%Y-%m-%d')
-            output_file = f"data/tweets_{timestamp}.csv"
-            
-            # Save to CSV
-            self.save_to_csv(all_tweets, output_file)
-            
-            logger.info(f"Scraping completed! Total tweets: {len(all_tweets)}")
-            logger.info(f"Output file: {output_file}")
+            output_file = f"data/tweets_{timestamp}.json"
+
+            # Save to JSON
+            with open(output_file, "w", encoding="utf-8") as f:
+                json.dump(all_tweets, f, ensure_ascii=False, indent=4)
+
+            logger.info(f"Saved {len(all_tweets)} tweets to {output_file}")
             
             return output_file
             
@@ -612,6 +614,7 @@ def main():
     logger.info("="*50)
     logger.info("Starting Tweet Scraper (Selenium)")
     logger.info("="*50)
+   
     
     try:
         scraper = SeleniumTweetScraper()
@@ -621,6 +624,7 @@ def main():
         logger.info("Tweet scraping completed successfully!")
         logger.info(f"Data saved to: {output_file}")
         logger.info("="*50)
+
         
     except Exception as e:
         logger.error(f"Fatal error: {str(e)}")

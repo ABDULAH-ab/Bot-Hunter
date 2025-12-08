@@ -1,5 +1,8 @@
 # Environment variables
 .env
+data/
+*.json
+*.log
 
 # Cookies (contains sensitive session data)
 data/twitter_cookies.pkl

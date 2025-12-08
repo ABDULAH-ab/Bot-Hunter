@@ -246,7 +246,7 @@ class TwitterHashtagScraper:
             logger.error(f"Login failed: {str(e)}")
             return False
     
-    def get_trending_hashtags(self, count=5):
+    def get_trending_hashtags(self, count=15):
         """
         Scrape trending hashtags from Twitter/X
         
@@ -348,7 +348,7 @@ class TwitterHashtagScraper:
             logger.error(f"Error saving hashtags: {str(e)}")
             raise
     
-    def scrape_with_retry(self, count=5):
+    def scrape_with_retry(self, count=15):
         """
         Main scraping method with retry logic
         
@@ -425,7 +425,7 @@ def main():
         scraper = TwitterHashtagScraper(headless=headless_mode)
         
         # Scrape trending hashtags
-        hashtags = scraper.scrape_with_retry(count=5)
+        hashtags = scraper.scrape_with_retry(count=15)
         
         if hashtags:
             # Save to file
