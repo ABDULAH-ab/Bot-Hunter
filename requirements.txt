@@ -1,0 +1,10 @@
+selenium
+undetected-chromedriver
+python-dotenv
+pymongo
+pandas
+langdetect
+schedule
+pytz
+pandas
+
