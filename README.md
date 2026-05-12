@@ -16,7 +16,11 @@ An AI-powered platform for detecting bot accounts on Twitter/X. Bot-Hunter combi
   - [Prerequisites](#prerequisites)
   - [Installation](#installation)
 - [Usage](#usage)
+- [Evaluation & Results](#evaluation--results)
+- [API Documentation](#api-documentation)
+- [Deployment](#deployment)
 - [Tech Stack](#tech-stack)
+- [Documentation](#documentation)
 - [License](#license)
 
 ---
@@ -241,6 +245,111 @@ npm start
 
 ---
 
+## Evaluation & Results
+
+The **TMTM model** is trained on the **TwiBot-22 dataset** (1M+ labeled accounts) using a grid-search optimization strategy:
+
+- **Validation metric:** Macro-F1 (accounts for class imbalance)
+- **Training strategy:** Class-weighted CrossEntropyLoss to address the imbalanced bot/human distribution
+- **Regularization:** Early stopping on validation macro-F1 (patience=20 epochs)
+- **Multi-seed approach:** 5 random seeds × 108 hyperparameter configurations to ensure robustness
+- **Best checkpoint:** Saved as `model/checkpoints/best_model.pt`
+
+**Reliability measures:**
+- Multimodal input (profile features + text embeddings + social graph) reduces single-modality bias
+- Relational GCN leverages bot-propagation patterns in the graph structure
+- Class weighting mitigates false negatives on small bot clusters
+- Cross-validation across seeds ensures reproducibility
+
+For detailed preprocessing, architecture, runtime input/output specifications, and evaluation defense, see [model/prepare.md](model/prepare.md).
+
+---
+
+## API Documentation
+
+### Authentication Endpoints
+
+| Endpoint | Method | Description | Auth |
+|----------|--------|-------------|------|
+| `/api/auth/signup` | POST | Register a new user | ✗ |
+| `/api/auth/login` | POST | Login with email/password | ✗ |
+| `/api/auth/google` | POST | Google OAuth 2.0 login | ✗ |
+| `/api/auth/me` | GET | Get current authenticated user | ✓ |
+
+### Bot Prediction Endpoints
+
+| Endpoint | Method | Description | Auth |
+|----------|--------|-------------|------|
+| `/api/predict/from-mongodb` | GET | Predict bot score for a user (from MongoDB) | ✓ |
+| `/api/predict/hashtag` | GET | Run hashtag scan + aggregate bot scores | ✓ |
+| `/api/predict/hashtag-suggestions` | GET | Get trending hashtag suggestions | ✓ |
+
+### User & Admin Endpoints
+
+| Endpoint | Method | Description | Auth |
+|----------|--------|-------------|------|
+| `/api/users/profile` | GET/PUT | Get/update user profile | ✓ |
+| `/api/admin/users` | GET | List all users (admin only) | ✓ Admin |
+| `/api/admin/stats` | GET | Platform usage statistics (admin only) | ✓ Admin |
+
+**Request example:**
+```bash
+curl -X GET "http://localhost:8000/api/predict/from-mongodb?username=example_user" \
+  -H "Authorization: Bearer <JWT_TOKEN>"
+```
+
+---
+
+## Deployment
+
+### Local Development (Docker Compose)
+
+```bash
+# Build and run all services
+docker-compose up --build
+
+# Services will be available at:
+# Frontend: http://localhost:3000
+# Backend:  http://localhost:8000
+# MongoDB:  localhost:27017
+```
+
+### Cloud Deployment (Production)
+
+**Recommended infrastructure:**
+- **Container registry:** GitHub Container Registry / DockerHub / AWS ECR
+- **Backend:** AWS ECS Fargate, DigitalOcean App Platform, or Google Cloud Run
+- **Database:** MongoDB Atlas (managed cloud instance)
+- **Storage:** AWS S3 for model artifacts and logs
+- **Frontend:** Netlify / Vercel / AWS S3 + CloudFront
+- **Monitoring:** Prometheus + Grafana, Sentry for error tracking
+
+**Deployment checklist:**
+```bash
+# 1. Build images
+docker build -t bothunter-backend:v1.0 -f Web/backend/Dockerfile Web/backend
+docker build -t bothunter-frontend:v1.0 -f Web/frontend/Dockerfile Web/frontend
+
+# 2. Push to registry
+docker push <registry>/bothunter-backend:v1.0
+docker push <registry>/bothunter-frontend:v1.0
+
+# 3. Deploy to orchestration platform (ECS / K8s / App Platform)
+# ... (platform-specific commands)
+
+# 4. Run smoke tests
+curl -X GET http://<deployed-backend>/health
+```
+
+**Model deployment:**
+- Store trained models in S3 as versioned artifacts (e.g., `s3://bucket/models/v1.0/best_model.pt`)
+- Update backend to load from S3 on startup
+- Implement canary deployments: route 5–10% traffic to new model version, monitor metrics, then promote or roll back
+
+See [deployment guide](DEPLOYMENT.md) for step-by-step cloud setup (AWS/GCP/Azure).
+
+---
+
 ## Tech Stack
 
 | Layer | Technologies |
@@ -253,8 +362,18 @@ npm start
 
 ---
 
+## Documentation
+
+For deeper technical insights, see:
+- **[model/prepare.md](model/prepare.md)** — Preprocessing pipeline, feature engineering, model architecture, runtime examples, and evaluation defense
+- **[Web/PROJECT_OVERVIEW.md](Web/PROJECT_OVERVIEW.md)** — Full-stack web app design, API flows, authentication, and database schema
+- **[model/IMPROVEMENTS.md](model/IMPROVEMENTS.md)** — Potential enhancements and optimization strategies
+- **[model/processed_data_report.md](model/processed_data_report.md)** — Data processing audit and tensor specifications
+
+---
+
 ## License
 
 This project is licensed under the **MIT License** — see the [LICENSE](LICENSE) file for details.
 
-© 2025 Abdullah
+© 2025–2026 Abdullah
