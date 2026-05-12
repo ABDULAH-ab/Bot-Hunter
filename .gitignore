@@ -198,6 +198,171 @@ cython_debug/
 #  Cursor is an AI-powered code editor. `.cursorignore` specifies files/directories to
 #  exclude from AI features like autocomplete and code analysis. Recommended for sensitive data
 #  refer to https://docs.cursor.com/context/ignore-files
+
+# ============================================================================
+# BOT-HUNTER SPECIFIC: SECRETS, CREDENTIALS, API KEYS
+# ============================================================================
+
+# Google OAuth and API credentials
+client_secret_*.json
+GoogleOAthCreds.txt
+GoogleOAuth*.txt
+*.credentials.json
+credentials.json
+secrets.json
+
+# Environment variables and secrets
+.env.local
+.env.*.local
+.env.production.local
+.env.development.local
+.env.test.local
+
+# API keys and tokens
+api_keys.txt
+tokens.txt
+*.key
+*.pem
+*.ppk
+private_keys/
+
+# ============================================================================
+# NODE.JS / FRONTEND BUILD
+# ============================================================================
+
+# Dependencies
+node_modules/
+Web/frontend/node_modules/
+Web/backend/node_modules/
+yarn.lock
+package-lock.json
+
+# Production build output
+dist/
+Web/frontend/build/
+Web/frontend/.next/
+out/
+
+# Cache files
+.cache/
+.eslintcache
+.next/cache/
+
+# ============================================================================
+# PYTHON VIRTUAL ENVIRONMENTS & PACKAGE MANAGERS
+# ============================================================================
+
+# Additional virtual env directories (if any)
+venv_*
+.venv_*
+env_*
+
+# ============================================================================
+# LOGS AND DEBUG FILES
+# ============================================================================
+
+# Application logs
+*.log
+logs/
+Web/backend/logs/
+Web/frontend/logs/
+model/logs/
+
+# Debug and dump files
+*.dump
+*.stackdump
+*.core
+debug/
+
+# Node debug log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# ============================================================================
+# DATABASE & DATA FILES
+# ============================================================================
+
+# SQLite local databases
+*.db
+*.sqlite
+*.sqlite3
+
+# Database exports and backups
+*.sql
+*.sql.bak
+*.sql.backup
+db_backup/
+database_exports/
+
+# MongoDB local cache / exports
+*.bson
+dump/
+local_db/
+db_exports/
+
+# ============================================================================
+# LARGE MODEL ARTIFACTS & PROCESSED DATA (optional, if using git-lfs)
+# ============================================================================
+
+# Model checkpoints and weights (keep only best_model.pt for deployment)
+model/checkpoints/*.pt
+!model/checkpoints/best_model.pt
+
+# Processed tensor data (too large for git)
+processed_data/*.pt
+model/processed_data/*.pt
+
+# Raw scraper data
+scraped_data/
+raw_data/
+*.csv
+*.parquet
+
+# ============================================================================
+# OS & IDE FILES
+# ============================================================================
+
+# macOS
+.DS_Store
+.AppleDouble
+.LSOverride
+
+# Windows
+Thumbs.db
+ehthumbs.db
+Desktop.ini
+
+# Linux
+.directory
+
+# IDEs
+.idea/
+.vscode/settings.json
+.vscode/launch.json
+*.swp
+*.swo
+*~
+
+# ============================================================================
+# TESTING & COVERAGE
+# ============================================================================
+
+# Jest coverage
+coverage/
+Web/frontend/coverage/
+Web/backend/coverage/
+
+# ============================================================================
+# CI/CD & DEPLOYMENT
+# ============================================================================
+
+# Kubernetes secrets
+k8s/secrets/
+
+# Docker build artifacts
+*.tar
+*.tar.gz
 .cursorignore
 .cursorindexingignore
 
@@ -205,3 +370,12 @@ cython_debug/
 marimo/_static/
 marimo/_lsp/
 __marimo__/
+
+# Scraping pipeline artifacts
+scraping pipeline/.env
+scraping pipeline/logs/
+scraping pipeline/data/
+scraping pipeline/user_data.mat
+scraping pipeline/unique_hashtags.json
+scraping pipeline/Preprocessing/processed_data/
+scraping pipeline/Preprocessing/Preprocessed_Data/

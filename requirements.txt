@@ -1,0 +1,24 @@
+# Core backend
+fastapi==0.104.1
+uvicorn[standard]==0.24.0
+python-jose[cryptography]==3.3.0
+bcrypt==4.0.1
+passlib==1.7.4
+google-auth==2.25.2
+google-auth-oauthlib==1.2.0
+google-auth-httplib2==0.2.0
+pymongo==4.6.0
+pydantic[email]==2.5.0
+python-multipart==0.0.6
+python-dotenv==1.0.0
+
+# ML and data pipeline
+pandas
+numpy
+scipy
+tqdm
+torch
+torch-geometric
+transformers
+vaderSentiment
+scikit-learn
