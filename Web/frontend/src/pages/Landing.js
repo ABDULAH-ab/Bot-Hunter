@@ -197,7 +197,7 @@ const Landing = () => {
           <div className="flex flex-col md:flex-row items-center justify-between gap-4">
             <Logo size="small" />
             <p className="text-sm text-muted-foreground">
-              © 2025 Bot Hunter. AI-powered bot detection for authenticity.
+              © {new Date().getFullYear()} Bot Hunter. AI-powered bot detection for authenticity.
             </p>
           </div>
         </div>

@@ -5,6 +5,13 @@ import os
 from datetime import datetime
 from typing import Optional
 
+# SSL certificate handling for production (Amazon Linux / OpenSSL 3.x)
+try:
+    import certifi
+    MONGO_TLS_OPTS = {"tlsCAFile": certifi.where()}
+except ImportError:
+    MONGO_TLS_OPTS = {"tlsAllowInvalidCertificates": True}
+
 # Load environment variables
 load_dotenv()
 
@@ -27,9 +34,7 @@ def get_database():
     global _client, _db
     if _db is None:
         try:
-            # Add tlsAllowInvalidCertificates to bypass SSL certificate verification
-            # This is a workaround for macOS certificate issues
-            _client = MongoClient(MONGODB_URL, tlsAllowInvalidCertificates=True)
+            _client = MongoClient(MONGODB_URL, **MONGO_TLS_OPTS)
             _db = _client[DATABASE_NAME]
             # Test connection
             _client.admin.command('ping')
@@ -45,7 +50,7 @@ def get_scrape_database():
     global _scrape_client, _scrape_db
     if _scrape_db is None:
         try:
-            _scrape_client = MongoClient(MONGODB_SCRAPE_URL, tlsAllowInvalidCertificates=True)
+            _scrape_client = MongoClient(MONGODB_SCRAPE_URL, **MONGO_TLS_OPTS)
             _scrape_db = _scrape_client[SCRAPE_DATABASE_NAME]
             # Test connection
             _scrape_client.admin.command('ping')

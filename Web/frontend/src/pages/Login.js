@@ -5,7 +5,7 @@ import { useGoogleLogin } from '@react-oauth/google';
 import axios from 'axios';
 import Button from '../components/ui/button';
 import Card from '../components/ui/card';
-import Logo from '../components/Logo';
+
 import Navbar from '../components/Navbar';
 import { useAuth } from '../context/AuthContext';
 import { TOKEN_EXPIRY_TIME, API_URL } from '../config/auth.config';
@@ -145,12 +145,9 @@ const Login = () => {
                   <label htmlFor="password" className="block text-sm font-medium">
                     Password
                   </label>
-                  <Link
-                    to="#"
-                    className="text-sm text-primary hover:underline"
-                  >
+                  <span className="text-sm text-muted-foreground">
                     Forgot password?
-                  </Link>
+                  </span>
                 </div>
                 <div className="relative">
                   <Lock className="absolute left-3 top-1/2 transform -translate-y-1/2 h-5 w-5 text-primary" />

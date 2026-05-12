@@ -5,7 +5,7 @@ import { useGoogleLogin } from '@react-oauth/google';
 import axios from 'axios';
 import Button from '../components/ui/button';
 import Card from '../components/ui/card';
-import Logo from '../components/Logo';
+
 import Navbar from '../components/Navbar';
 import { useAuth } from '../context/AuthContext';
 import { TOKEN_EXPIRY_TIME, API_URL } from '../config/auth.config';

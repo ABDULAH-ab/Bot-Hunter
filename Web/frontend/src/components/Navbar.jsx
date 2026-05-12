@@ -1,29 +1,32 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { useNavigate } from 'react-router-dom';
-import { LayoutDashboard, LogIn, UserPlus, Shield, LogOut, Search, User } from 'lucide-react';
+import { useNavigate, useLocation } from 'react-router-dom';
+import { LayoutDashboard, LogIn, UserPlus, Shield, LogOut, Search, User, X, Menu } from 'lucide-react';
 import Button from './ui/button';
 import Logo from './Logo';
 import { useAuth } from '../context/AuthContext';
 
 const Navbar = () => {
   const navigate = useNavigate();
+  const location = useLocation();
   const { isAuthenticated, user, logout } = useAuth();
   const [isVisible, setIsVisible] = useState(true);
+  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const lastScrollYRef = useRef(0);
 
-  // Debug: Log user data
+  // Close mobile menu on route change
   useEffect(() => {
-    if (user) {
-      console.log('=== NAVBAR DEBUG ===');
-      console.log('Full user object:', user);
-      console.log('Username:', user.username);
-      console.log('Email:', user.email);
-      console.log('Profile picture:', user.profile_picture);
-      console.log('Auth provider:', user.auth_provider);
-      console.log('Google ID:', user.google_id);
-      console.log('===================');
+    setMobileMenuOpen(false);
+  }, [location.pathname]);
+
+  // Prevent body scroll when mobile menu is open
+  useEffect(() => {
+    if (mobileMenuOpen) {
+      document.body.style.overflow = 'hidden';
+    } else {
+      document.body.style.overflow = '';
     }
-  }, [user]);
+    return () => { document.body.style.overflow = ''; };
+  }, [mobileMenuOpen]);
 
   useEffect(() => {
     const handleScroll = () => {
@@ -33,6 +36,7 @@ const Navbar = () => {
         setIsVisible(true);
       } else if (currentScrollY > lastScrollYRef.current + 8) {
         setIsVisible(false);
+        setMobileMenuOpen(false);
       } else if (currentScrollY < lastScrollYRef.current - 8) {
         setIsVisible(true);
       }
@@ -41,7 +45,6 @@ const Navbar = () => {
     };
 
     window.addEventListener('scroll', handleScroll, { passive: true });
-
     handleScroll();
 
     return () => {
@@ -50,8 +53,14 @@ const Navbar = () => {
   }, []);
 
   const handleLogout = () => {
+    setMobileMenuOpen(false);
     logout();
     navigate('/');
+  };
+
+  const handleNavigate = (path) => {
+    setMobileMenuOpen(false);
+    navigate(path);
   };
 
   return (
@@ -65,13 +74,13 @@ const Navbar = () => {
           {/* Logo */}
           <Logo />
 
-          {/* Navigation Links */}
+          {/* Desktop Navigation Links */}
           <div className="hidden md:flex items-center gap-4">
             {isAuthenticated ? (
               <>
                 <Button
                   variant="ghost"
-                  onClick={() => navigate('/home')}
+                  onClick={() => handleNavigate('/home')}
                   className="gap-2"
                 >
                   <LayoutDashboard className="h-4 w-4" />
@@ -79,7 +88,7 @@ const Navbar = () => {
                 </Button>
                 <Button
                   variant="ghost"
-                  onClick={() => navigate('/new-scan')}
+                  onClick={() => handleNavigate('/new-scan')}
                   className="gap-2"
                 >
                   <Search className="h-4 w-4" />
@@ -87,7 +96,7 @@ const Navbar = () => {
                 </Button>
                 <Button
                   variant="ghost"
-                  onClick={() => navigate('/dashboard')}
+                  onClick={() => handleNavigate('/dashboard')}
                   className="gap-2"
                 >
                   <LayoutDashboard className="h-4 w-4" />
@@ -96,7 +105,7 @@ const Navbar = () => {
                 {user?.is_admin && (
                   <Button
                     variant="ghost"
-                    onClick={() => navigate('/admin')}
+                    onClick={() => handleNavigate('/admin')}
                     className="gap-2"
                   >
                     <Shield className="h-4 w-4" />
@@ -115,11 +124,7 @@ const Navbar = () => {
                         className="w-full h-full object-cover"
                         crossOrigin="anonymous"
                         referrerPolicy="no-referrer"
-                        onLoad={() => console.log('✅ Profile image loaded successfully:', user.profile_picture)}
                         onError={(e) => {
-                          console.error('❌ Image failed to load:', user.profile_picture);
-                          console.error('Error event:', e);
-                          // Replace with fallback icon
                           e.target.style.display = 'none';
                           const parent = e.target.parentElement;
                           if (parent && !parent.querySelector('svg')) {
@@ -160,7 +165,7 @@ const Navbar = () => {
               <>
                 <Button
                   variant="outline"
-                  onClick={() => navigate('/login')}
+                  onClick={() => handleNavigate('/login')}
                   className="gap-2"
                 >
                   <LogIn className="h-4 w-4" />
@@ -168,7 +173,7 @@ const Navbar = () => {
                 </Button>
                 <Button
                   variant="hero"
-                  onClick={() => navigate('/signup')}
+                  onClick={() => handleNavigate('/signup')}
                   className="gap-2"
                 >
                   <UserPlus className="h-4 w-4" />
@@ -179,36 +184,123 @@ const Navbar = () => {
           </div>
 
           {/* Mobile Menu Button */}
-          <Button
-            variant="ghost"
-            size="icon"
-            className="md:hidden"
-            onClick={() => {
-              // Mobile menu toggle logic can be added here
-            }}
+          <button
+            className="md:hidden flex items-center justify-center w-10 h-10 rounded-lg text-foreground hover:bg-accent transition-colors"
+            onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
+            aria-label={mobileMenuOpen ? 'Close menu' : 'Open menu'}
           >
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              width="24"
-              height="24"
-              viewBox="0 0 24 24"
-              fill="none"
-              stroke="currentColor"
-              strokeWidth="2"
-              strokeLinecap="round"
-              strokeLinejoin="round"
-            >
-              <line x1="4" x2="20" y1="12" y2="12" />
-              <line x1="4" x2="20" y1="6" y2="6" />
-              <line x1="4" x2="20" y1="18" y2="18" />
-            </svg>
-          </Button>
+            {mobileMenuOpen ? (
+              <X className="h-6 w-6" />
+            ) : (
+              <Menu className="h-6 w-6" />
+            )}
+          </button>
         </div>
+        </div>
+
+        {/* Mobile Menu Panel */}
+        <div
+          className={`md:hidden overflow-hidden transition-all duration-300 ease-in-out ${
+            mobileMenuOpen ? 'max-h-[500px] opacity-100' : 'max-h-0 opacity-0'
+          }`}
+        >
+          <div className="border-t border-border/50 bg-background/95 backdrop-blur-xl px-4 py-4 space-y-2">
+            {isAuthenticated ? (
+              <>
+                {/* User info */}
+                <div className="flex items-center gap-3 px-3 py-3 rounded-lg bg-primary/5 border border-primary/20 mb-3">
+                  <div className="flex items-center justify-center w-9 h-9 rounded-full bg-primary/10 border border-primary/30 overflow-hidden flex-shrink-0">
+                    {user?.profile_picture ? (
+                      <img
+                        src={user.profile_picture}
+                        alt={user?.username || 'User'}
+                        className="w-full h-full object-cover"
+                        referrerPolicy="no-referrer"
+                        onError={(e) => { e.target.style.display = 'none'; }}
+                      />
+                    ) : (
+                      <User className="h-4 w-4 text-primary" />
+                    )}
+                  </div>
+                  <div className="min-w-0">
+                    <p className="text-sm font-semibold text-foreground truncate">{user?.username}</p>
+                    <p className="text-xs text-muted-foreground truncate">{user?.email}</p>
+                  </div>
+                </div>
+
+                <button
+                  onClick={() => handleNavigate('/home')}
+                  className="w-full flex items-center gap-3 px-3 py-3 rounded-lg text-foreground hover:bg-accent transition-colors text-left"
+                >
+                  <LayoutDashboard className="h-5 w-5 text-primary" />
+                  <span className="font-medium">Home</span>
+                </button>
+                <button
+                  onClick={() => handleNavigate('/new-scan')}
+                  className="w-full flex items-center gap-3 px-3 py-3 rounded-lg text-foreground hover:bg-accent transition-colors text-left"
+                >
+                  <Search className="h-5 w-5 text-primary" />
+                  <span className="font-medium">New Scan</span>
+                </button>
+                <button
+                  onClick={() => handleNavigate('/dashboard')}
+                  className="w-full flex items-center gap-3 px-3 py-3 rounded-lg text-foreground hover:bg-accent transition-colors text-left"
+                >
+                  <LayoutDashboard className="h-5 w-5 text-primary" />
+                  <span className="font-medium">Dashboard</span>
+                </button>
+                {user?.is_admin && (
+                  <button
+                    onClick={() => handleNavigate('/admin')}
+                    className="w-full flex items-center gap-3 px-3 py-3 rounded-lg text-foreground hover:bg-accent transition-colors text-left"
+                  >
+                    <Shield className="h-5 w-5 text-primary" />
+                    <span className="font-medium">Admin</span>
+                  </button>
+                )}
+                <div className="border-t border-border/50 mt-2 pt-2">
+                  <button
+                    onClick={handleLogout}
+                    className="w-full flex items-center gap-3 px-3 py-3 rounded-lg text-destructive hover:bg-destructive/10 transition-colors text-left"
+                  >
+                    <LogOut className="h-5 w-5" />
+                    <span className="font-medium">Logout</span>
+                  </button>
+                </div>
+              </>
+            ) : (
+              <>
+                <button
+                  onClick={() => handleNavigate('/login')}
+                  className="w-full flex items-center gap-3 px-3 py-3 rounded-lg text-foreground hover:bg-accent transition-colors text-left"
+                >
+                  <LogIn className="h-5 w-5 text-primary" />
+                  <span className="font-medium">Login</span>
+                </button>
+                <button
+                  onClick={() => handleNavigate('/signup')}
+                  className="w-full flex items-center gap-3 px-3 py-3 rounded-lg bg-primary/10 text-primary hover:bg-primary/20 transition-colors text-left"
+                >
+                  <UserPlus className="h-5 w-5" />
+                  <span className="font-medium">Get Started</span>
+                </button>
+              </>
+            )}
+          </div>
         </div>
       </nav>
+
+      {/* Backdrop overlay when mobile menu is open */}
+      {mobileMenuOpen && (
+        <div
+          className="fixed inset-0 z-40 bg-black/50 md:hidden"
+          onClick={() => setMobileMenuOpen(false)}
+        />
+      )}
     </>
   );
 };
 
 export default Navbar;
+
 
