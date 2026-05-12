@@ -8,7 +8,7 @@ import Card from '../components/ui/card';
 import Logo from '../components/Logo';
 import Navbar from '../components/Navbar';
 import { useAuth } from '../context/AuthContext';
-import { TOKEN_EXPIRY_TIME } from '../config/auth.config';
+import { TOKEN_EXPIRY_TIME, API_URL } from '../config/auth.config';
 
 const Signup = () => {
   const [formData, setFormData] = useState({
@@ -86,37 +86,37 @@ const Signup = () => {
     onSuccess: async (tokenResponse) => {
       setError('');
       setLoading(true);
-      
+
       try {
         // Get user info from Google
         const userInfo = await axios.get(
           'https://www.googleapis.com/oauth2/v3/userinfo',
           { headers: { Authorization: `Bearer ${tokenResponse.access_token}` } }
         );
-        
+
         // Send to your backend
         const response = await axios.post(
-          'http://localhost:8000/api/auth/google-login',
-          { 
+          `${API_URL}/auth/google-login`,
+          {
             credential: tokenResponse.access_token,
-            userInfo: userInfo.data 
+            userInfo: userInfo.data
           }
         );
-        
+
         const { access_token } = response.data;
-        
+
         // Set token expiry time from config
         const expiryTime = new Date().getTime() + TOKEN_EXPIRY_TIME;
-        
+
         localStorage.setItem('token', access_token);
         localStorage.setItem('tokenExpiry', expiryTime.toString());
         axios.defaults.headers.common['Authorization'] = `Bearer ${access_token}`;
-        
+
         // Check if user is admin
-        const userResponse = await axios.get('http://localhost:8000/api/auth/me', {
+        const userResponse = await axios.get(`${API_URL}/auth/me`, {
           headers: { Authorization: `Bearer ${access_token}` }
         });
-        
+
         if (userResponse.data.is_admin) {
           window.location.href = '/admin';
         } else {

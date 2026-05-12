@@ -1,13 +1,13 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { 
-  Shield, 
-  Users, 
-  TrendingUp, 
-  Database, 
-  Search, 
-  Edit, 
-  Trash2, 
+import {
+  Shield,
+  Users,
+  TrendingUp,
+  Database,
+  Search,
+  Edit,
+  Trash2,
   RefreshCw,
   CheckCircle,
   XCircle,
@@ -18,6 +18,7 @@ import {
 import Navbar from '../components/Navbar';
 import Button from '../components/ui/button';
 import Card from '../components/ui/card';
+import { API_URL } from '../config/auth.config';
 
 const AdminDashboard = () => {
   const navigate = useNavigate();
@@ -38,7 +39,7 @@ const AdminDashboard = () => {
 
   const checkAdminAccess = async () => {
     const token = localStorage.getItem('token');
-    
+
     if (!token) {
       navigate('/login');
       return;
@@ -46,7 +47,7 @@ const AdminDashboard = () => {
 
     // Fetch fresh user data from server to check admin status
     try {
-      const response = await fetch('http://localhost:8000/api/auth/me', {
+      const response = await fetch(`${API_URL}/auth/me`, {
         headers: {
           'Authorization': `Bearer ${token}`
         }
@@ -54,7 +55,7 @@ const AdminDashboard = () => {
 
       if (response.ok) {
         const userData = await response.json();
-        
+
         if (!userData.is_admin) {
           setError('Admin access required. Redirecting...');
           setTimeout(() => navigate('/dashboard'), 2000);
@@ -92,12 +93,12 @@ const AdminDashboard = () => {
   const fetchUsers = async () => {
     const token = localStorage.getItem('token');
     try {
-      const response = await fetch('http://localhost:8000/api/admin/users?limit=100', {
+      const response = await fetch(`${API_URL}/admin/users?limit=100`, {
         headers: {
           'Authorization': `Bearer ${token}`
         }
       });
-      
+
       if (response.ok) {
         const data = await response.json();
         setUsers(data.users);
@@ -113,12 +114,12 @@ const AdminDashboard = () => {
   const fetchUserStats = async () => {
     const token = localStorage.getItem('token');
     try {
-      const response = await fetch('http://localhost:8000/api/admin/stats/users', {
+      const response = await fetch(`${API_URL}/admin/stats/users`, {
         headers: {
           'Authorization': `Bearer ${token}`
         }
       });
-      
+
       if (response.ok) {
         const data = await response.json();
         setUserStats(data);
@@ -131,12 +132,12 @@ const AdminDashboard = () => {
   const fetchSystemStats = async () => {
     const token = localStorage.getItem('token');
     try {
-      const response = await fetch('http://localhost:8000/api/admin/stats/system', {
+      const response = await fetch(`${API_URL}/admin/stats/system`, {
         headers: {
           'Authorization': `Bearer ${token}`
         }
       });
-      
+
       if (response.ok) {
         const data = await response.json();
         setSystemStats(data);
@@ -149,12 +150,12 @@ const AdminDashboard = () => {
   const fetchRecentActivity = async () => {
     const token = localStorage.getItem('token');
     try {
-      const response = await fetch('http://localhost:8000/api/admin/recent-activity', {
+      const response = await fetch(`${API_URL}/admin/recent-activity`, {
         headers: {
           'Authorization': `Bearer ${token}`
         }
       });
-      
+
       if (response.ok) {
         const data = await response.json();
         setRecentActivity(data.recent_users);
@@ -175,9 +176,9 @@ const AdminDashboard = () => {
 
   const handleUpdateUser = async () => {
     const token = localStorage.getItem('token');
-    
+
     try {
-      const response = await fetch(`http://localhost:8000/api/admin/users/${selectedUser._id}`, {
+      const response = await fetch(`${API_URL}/admin/users/${selectedUser._id}`, {
         method: 'PATCH',
         headers: {
           'Authorization': `Bearer ${token}`,
@@ -209,9 +210,9 @@ const AdminDashboard = () => {
     }
 
     const token = localStorage.getItem('token');
-    
+
     try {
-      const response = await fetch(`http://localhost:8000/api/admin/users/${userId}`, {
+      const response = await fetch(`${API_URL}/admin/users/${userId}`, {
         method: 'DELETE',
         headers: {
           'Authorization': `Bearer ${token}`
@@ -230,7 +231,7 @@ const AdminDashboard = () => {
     }
   };
 
-  const filteredUsers = users.filter(user => 
+  const filteredUsers = users.filter(user =>
     user.username?.toLowerCase().includes(searchTerm.toLowerCase()) ||
     user.email?.toLowerCase().includes(searchTerm.toLowerCase())
   );
@@ -249,7 +250,7 @@ const AdminDashboard = () => {
   return (
     <div className="min-h-screen bg-background">
       <Navbar />
-      
+
       <div className="container mx-auto px-4 py-8 max-w-7xl">
         {/* Header */}
         <div className="flex justify-between items-center mb-8">
@@ -389,11 +390,10 @@ const AdminDashboard = () => {
                       <td className="py-3 px-4 text-sm text-foreground">{user.username}</td>
                       <td className="py-3 px-4 text-sm text-foreground">{user.email}</td>
                       <td className="py-3 px-4">
-                        <span className={`inline-flex items-center px-2 py-1 rounded-full text-xs font-medium ${
-                          user.auth_provider === 'google' 
-                            ? 'bg-primary/20 text-primary' 
+                        <span className={`inline-flex items-center px-2 py-1 rounded-full text-xs font-medium ${user.auth_provider === 'google'
+                            ? 'bg-primary/20 text-primary'
                             : 'bg-muted text-muted-foreground'
-                        }`}>
+                          }`}>
                           {user.auth_provider === 'google' ? 'Google' : 'Email'}
                         </span>
                       </td>
@@ -472,11 +472,10 @@ const AdminDashboard = () => {
                       <td className="py-3 px-4 text-sm text-foreground">{user.username}</td>
                       <td className="py-3 px-4 text-sm text-foreground">{user.email}</td>
                       <td className="py-3 px-4">
-                        <span className={`inline-flex items-center px-2 py-1 rounded-full text-xs font-medium ${
-                          user.auth_provider === 'google' 
-                            ? 'bg-primary/20 text-primary' 
+                        <span className={`inline-flex items-center px-2 py-1 rounded-full text-xs font-medium ${user.auth_provider === 'google'
+                            ? 'bg-primary/20 text-primary'
                             : 'bg-muted text-muted-foreground'
-                        }`}>
+                          }`}>
                           {user.auth_provider === 'google' ? 'Google' : 'Email'}
                         </span>
                       </td>
@@ -525,7 +524,7 @@ const AdminDashboard = () => {
                     <input
                       type="checkbox"
                       checked={selectedUser.is_active}
-                      onChange={(e) => setSelectedUser({...selectedUser, is_active: e.target.checked})}
+                      onChange={(e) => setSelectedUser({ ...selectedUser, is_active: e.target.checked })}
                       className="w-5 h-5 rounded border-border text-green-500 focus:ring-green-500"
                     />
                   </label>
@@ -535,7 +534,7 @@ const AdminDashboard = () => {
                     <input
                       type="checkbox"
                       checked={selectedUser.is_admin}
-                      onChange={(e) => setSelectedUser({...selectedUser, is_admin: e.target.checked})}
+                      onChange={(e) => setSelectedUser({ ...selectedUser, is_admin: e.target.checked })}
                       className="w-5 h-5 rounded border-border text-secondary focus:ring-secondary"
                     />
                   </label>

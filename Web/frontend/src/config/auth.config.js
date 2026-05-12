@@ -17,4 +17,8 @@ export const TOKEN_EXPIRY_TIME = 24 * 60 * 60 * 1000; // 24 hours
 export const TOKEN_CHECK_INTERVAL = 60000; // 1 minute
 
 // API Base URL
-export const API_URL = 'http://localhost:8000/api';
+// Falls back to localhost for local development.
+// Production builds use REACT_APP_API_URL from .env.production
+export const API_URL = process.env.REACT_APP_API_URL
+  ? `${process.env.REACT_APP_API_URL}/api`
+  : 'http://localhost:8000/api';
