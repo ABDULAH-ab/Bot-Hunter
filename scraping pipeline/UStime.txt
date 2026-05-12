@@ -1,1 +1,0 @@
-python -c "from datetime import datetime; import pytz; us_time = datetime.now(pytz.timezone('America/New_York')); print('US Eastern Time:', us_time.strftime('%H:%M')); pak_time = us_time.astimezone(pytz.timezone('Asia/Karachi')); print('Pakistan Time:', pak_time.strftime('%H:%M'))"

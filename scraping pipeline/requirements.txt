@@ -1,8 +1,0 @@
-selenium
-undetected-chromedriver
-python-dotenv
-pandas
-langdetect
-schedule
-pytz
-
