@@ -380,3 +380,9 @@ scraping pipeline/user_data.mat
 scraping pipeline/unique_hashtags.json
 scraping pipeline/Preprocessing/processed_data/
 scraping pipeline/Preprocessing/Preprocessed_Data/
+
+# AWS deployment temp files
+cf-current.json
+cf-update.json
+cloudfront-config.json
+deployment_strategy.md
