@@ -419,21 +419,21 @@ const Dashboard = () => {
         }`}
       >
         <div className="container mx-auto px-4">
-          <div className="flex h-16 items-center justify-between">
+          <div className="flex min-h-16 py-3 items-center justify-between gap-3 flex-wrap">
             <div>
-              <h1 className="text-2xl font-bold">Detection Dashboard</h1>
-              <p className="text-sm text-muted-foreground">
+              <h1 className="text-lg sm:text-2xl font-bold text-foreground">Detection Dashboard</h1>
+              <p className="text-xs sm:text-sm text-muted-foreground">
                 Last updated: {latestScan ? formatTimeAgo(latestScan.scanned_at) : 'No scans yet'}
               </p>
             </div>
             <div className="flex items-center gap-2">
-              <Button variant="ghost" size="sm" className="gap-2" onClick={exportReportPDF} disabled={!scans.length}>
-                <Download className="h-4 w-4" />
-                Export PDF
+              <Button variant="ghost" size="sm" className="gap-1.5 whitespace-nowrap text-xs sm:text-sm px-2.5 sm:px-3" onClick={exportReportPDF} disabled={!scans.length}>
+                <Download className="h-4 w-4 flex-shrink-0" />
+                <span>Export PDF</span>
               </Button>
-              <Button variant="hero" size="sm" className="gap-2" onClick={() => navigate('/new-scan')}>
-                <Search className="h-4 w-4" />
-                NEW SCAN
+              <Button variant="hero" size="sm" className="gap-1.5 whitespace-nowrap text-xs sm:text-sm px-3 sm:px-4" onClick={() => navigate('/new-scan')}>
+                <Search className="h-4 w-4 flex-shrink-0" />
+                <span>NEW SCAN</span>
               </Button>
             </div>
           </div>

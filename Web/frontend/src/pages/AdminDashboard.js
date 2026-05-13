@@ -252,24 +252,23 @@ const AdminDashboard = () => {
       <Navbar />
 
       <div className="container mx-auto px-4 py-8 max-w-7xl">
-        {/* Header */}
-        <div className="flex justify-between items-center mb-8">
+        <div className="flex justify-between items-start sm:items-center gap-4 flex-wrap mb-8">
           <div>
-            <h1 className="text-4xl font-bold text-primary flex items-center gap-3 mb-2">
-              <Shield className="h-10 w-10" />
-              Admin Dashboard
+            <h1 className="text-2xl sm:text-4xl font-bold text-primary flex items-center gap-2 sm:gap-3 mb-2">
+              <Shield className="h-7 w-7 sm:h-10 sm:w-10 flex-shrink-0" />
+              <span>Admin Dashboard</span>
             </h1>
-            <p className="text-muted-foreground">
+            <p className="text-sm sm:text-base text-muted-foreground">
               Manage users, view statistics, and monitor system health
             </p>
           </div>
           <Button
             variant="outline"
             onClick={fetchAllData}
-            className="gap-2"
+            className="gap-2 whitespace-nowrap"
           >
-            <RefreshCw className="h-4 w-4" />
-            Refresh
+            <RefreshCw className="h-4 w-4 flex-shrink-0" />
+            <span>Refresh</span>
           </Button>
         </div>
 
