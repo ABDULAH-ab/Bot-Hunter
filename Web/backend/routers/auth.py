@@ -1,7 +1,7 @@
 from fastapi import APIRouter, Depends, HTTPException, status
 from fastapi.security import HTTPBearer, HTTPAuthorizationCredentials
 from database import get_database
-from models import UserCreate, UserLogin, UserResponse, Token
+from models import UserCreate, UserLogin, UserResponse, Token, PasswordReset
 from auth_utils import verify_password, get_password_hash, create_access_token, decode_access_token
 from datetime import datetime, timedelta
 from bson import ObjectId
@@ -250,3 +250,40 @@ async def google_login(credential: dict):
             status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
             detail=f"Google authentication failed: {str(e)}"
         )
+
+@router.post("/reset-password")
+async def reset_password(payload: PasswordReset):
+    """Directly update password for a given username or email"""
+    db = get_database()
+    users_collection = db.users
+    
+    # Find user by username or email
+    user = users_collection.find_one({
+        "$or": [
+            {"username": payload.username},
+            {"email": payload.username}
+        ]
+    })
+    
+    if not user:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail="User account not found"
+        )
+        
+    # Validate password length (bcrypt 72-byte limit)
+    password_bytes = payload.new_password.encode('utf-8')
+    if len(password_bytes) > 72:
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail="Password is too long. Maximum 72 bytes allowed."
+        )
+        
+    # Hash new password and update
+    hashed_password = get_password_hash(payload.new_password)
+    users_collection.update_one(
+        {"_id": user["_id"]},
+        {"$set": {"hashed_password": hashed_password}}
+    )
+    
+    return {"message": "Password updated successfully"}

@@ -145,9 +145,9 @@ const Login = () => {
                   <label htmlFor="password" className="block text-sm font-medium">
                     Password
                   </label>
-                  <span className="text-sm text-muted-foreground">
+                  <Link to="/forgot-password" className="text-sm text-primary hover:underline">
                     Forgot password?
-                  </span>
+                  </Link>
                 </div>
                 <div className="relative">
                   <Lock className="absolute left-3 top-1/2 transform -translate-y-1/2 h-5 w-5 text-primary" />

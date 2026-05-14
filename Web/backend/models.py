@@ -12,6 +12,10 @@ class UserLogin(BaseModel):
     username: str  # Can be username or email
     password: str
 
+class PasswordReset(BaseModel):
+    username: str  # Can be username or email
+    new_password: str
+
 class UserResponse(BaseModel):
     id: str = Field(alias="_id")
     username: str

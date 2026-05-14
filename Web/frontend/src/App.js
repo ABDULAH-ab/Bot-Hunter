@@ -11,6 +11,9 @@ import Dashboard from './pages/Dashboard';
 import Homepage from './pages/Homepage';
 import NewScan from './pages/NewScan';
 import AdminDashboard from './pages/AdminDashboard';
+import ForgotPassword from './pages/ForgotPassword';
+import Terms from './pages/Terms';
+import Privacy from './pages/Privacy';
 import PrivateRoute from './components/PrivateRoute';
 
 // Google OAuth Client ID (get from Google Cloud Console)
@@ -147,6 +150,9 @@ function App() {
               <Route path="/" element={<Landing />} />
               <Route path="/login" element={<Login />} />
               <Route path="/signup" element={<Signup />} />
+              <Route path="/forgot-password" element={<ForgotPassword />} />
+              <Route path="/terms" element={<Terms />} />
+              <Route path="/privacy" element={<Privacy />} />
               <Route
                 path="/home"
                 element={
