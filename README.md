@@ -342,8 +342,6 @@ curl -X GET http://<deployed-backend>/health
 - Update backend to load from S3 on startup
 - Implement canary deployments: route 5–10% traffic to new model version, monitor metrics, then promote or roll back
 
-See [deployment guide](DEPLOYMENT.md) for step-by-step cloud setup (AWS/GCP/Azure).
-
 ---
 
 ## Tech Stack
