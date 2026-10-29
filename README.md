@@ -20,7 +20,6 @@ An AI-powered platform for detecting bot accounts on Twitter/X. Bot-Hunter combi
 - [API Documentation](#api-documentation)
 - [Deployment](#deployment)
 - [Tech Stack](#tech-stack)
-- [Documentation](#documentation)
 - [License](#license)
 
 ---
@@ -172,7 +171,8 @@ A full-stack platform built with **React** (frontend) and **FastAPI** (backend).
 ```bash
 # Backend
 cd Web/backend
-python3 -m venv venv && source venv/bin/activate
+python3 -m venv venv
+source venv/bin/activate
 pip install -r ../../requirements.txt
 cp env.example .env   # edit with your credentials
 python3 main.py       # → http://localhost:8000
