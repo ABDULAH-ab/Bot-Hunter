@@ -236,7 +236,7 @@ python finetune.py --checkpoint checkpoints/best_model.pt
 
 # Step 3: Launch the web app
 cd ../Web/backend
-python3 main.py &
+python3 main.py
 cd ../frontend
 npm start
 ```
