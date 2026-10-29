@@ -183,8 +183,6 @@ npm install
 npm start             # → http://localhost:3000
 ```
 
-See [`Web/PROJECT_OVERVIEW.md`](Web/PROJECT_OVERVIEW.md) for detailed web-app documentation.
-
 ---
 
 ## Getting Started
@@ -260,8 +258,6 @@ The **TMTM model** is trained on the **TwiBot-22 dataset** (1M+ labeled accounts
 - Relational GCN leverages bot-propagation patterns in the graph structure
 - Class weighting mitigates false negatives on small bot clusters
 - Cross-validation across seeds ensures reproducibility
-
-For detailed preprocessing, architecture, runtime input/output specifications, and evaluation defense, see [model/prepare.md](model/prepare.md).
 
 ---
 
@@ -359,16 +355,6 @@ See [deployment guide](DEPLOYMENT.md) for step-by-step cloud setup (AWS/GCP/Azur
 | **NLP** | BERTweet (`vinai/bertweet-base`), VADER Sentiment |
 | **Backend** | FastAPI, Uvicorn, Pydantic, python-jose (JWT), bcrypt, Google Auth |
 | **Frontend** | React 18, React Router, Material-UI, Tailwind CSS, Axios |
-
----
-
-## Documentation
-
-For deeper technical insights, see:
-- **[model/prepare.md](model/prepare.md)** — Preprocessing pipeline, feature engineering, model architecture, runtime examples, and evaluation defense
-- **[Web/PROJECT_OVERVIEW.md](Web/PROJECT_OVERVIEW.md)** — Full-stack web app design, API flows, authentication, and database schema
-- **[model/IMPROVEMENTS.md](model/IMPROVEMENTS.md)** — Potential enhancements and optimization strategies
-- **[model/processed_data_report.md](model/processed_data_report.md)** — Data processing audit and tensor specifications
 
 ---
 
